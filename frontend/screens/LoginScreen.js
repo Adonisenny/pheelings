@@ -30,15 +30,15 @@ const postLogin = async() => {
   dispatch({type:"LOGIN_START"})
 
   try{
-  // const res = await axios.post(`${BASE_URL}/api/auth/login`,{
-  //   username,
-  //   password,
-  // })
-
-  const res = await axios.post('http://192.168.68.107:6000/api/auth/login',{
+  const res = await axios.post(`${BASE_URL}/api/auth/login`,{
     username,
     password,
   })
+
+  // const res = await axios.post('http://192.168.68.107:6000/api/auth/login',{
+  //   username,
+  //   password,
+  // })
   console.log("Response from server:", res.data);
 
   const token = res.data?.token;
