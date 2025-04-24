@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://pheel-backend.onrender.com';
+export const BASE_URL = 'https://pheelings.onrender.com';
