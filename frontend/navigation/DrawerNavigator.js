@@ -9,7 +9,8 @@ import { AuthContext, AuthContextProvider } from '../TheContext/AuthContext.js';
 import { ContentContextProvider } from '../TheContext/contentcontext.js';
 import { ViewScreen } from '../screens/ViewScreen.js';
 import { ThreadContextProvider } from '../TheContext/threadContext.js';
-
+import { SignOut } from '../screens/LogoutScreen.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
@@ -64,6 +65,7 @@ const RootNavigator = () => {
 
  <Drawer.Screen name="Login" component={LoginScreen}/>
 <Drawer.Screen name="Register" component={RegisterScreen}/>
+
 </>
 ):(
   <>
@@ -72,6 +74,7 @@ const RootNavigator = () => {
 <Drawer.Screen name="View" component={ViewScreen}/>
 
 <Drawer.Screen name="Add Entry" component={AddEntryScreen} />
+<Drawer.Screen name="SignOut" component={SignOut}/>
 
 </>
 )}

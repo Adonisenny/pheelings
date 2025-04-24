@@ -38,24 +38,16 @@ export const login = async(req,res,next)=> {
         if(!User) return next (ErrorHandler(404, 'user does not exist'))
         const isPasswordCorrect = await bcrypt.compare(req.body.password, User.password)
         if(!isPasswordCorrect) return next(ErrorHandler(400, 'username or password not correct'))
-        const token =jwt.sign({id:User._id}, process.env.thestash)
-        const {password, ...otherdetails} =User._doc
-        res.cookie('access_token', token,{
-            httpOnly:true,
 
-        }).status(200).json(otherdetails)
+        const token =jwt.sign({id:User._id}, process.env.thestash)
+
+        const {password, ...otherdetails} =User._doc
+        res.status(200).json({token,...otherdetails})
+        console.log(token)
     }catch(error){
         next(error)
+        console.log('the error')
     }
 }
 
-export const logout = async (req,res,next)=> {
-    try{
-        res.clearCookie('access_token',{
-          sameSite:'none',
-          secure:true  
-        }).status(200).json('you have been logged out')
-    }catch(err){
-        res.status(500).json({error:"logout unsuccessful"})
-    }
-}
+

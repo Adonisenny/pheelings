@@ -4,6 +4,7 @@ import { useContext, useState } from "react"
 import { View,StyleSheet,TextInput,TouchableOpacity,Text } from "react-native"
 import { AuthContext } from "../TheContext/AuthContext"
 import { BASE_URL } from "../constants"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 
 
@@ -21,30 +22,52 @@ export const LoginScreen =() => {
     const navigation = useNavigation()
 
 const postLogin = async() => {
-  
-  const loginDetails = {username,password}
-  if(!username && !password){
+
+  if(!username || !password){
     setErrM('complete both fields')
+    return;
   }
   dispatch({type:"LOGIN_START"})
 
   try{
-  const res = await axios.post(`${BASE_URL}/api/auth/login`,loginDetails)
-const otherres = res.data
+  // const res = await axios.post(`${BASE_URL}/api/auth/login`,{
+  //   username,
+  //   password,
+  // })
 
- setPassword('')
+  const res = await axios.post('http://192.168.68.107:6000/api/auth/login',{
+    username,
+    password,
+  })
+  console.log("Response from server:", res.data);
+
+  const token = res.data?.token;
+
+  if (!token){
+    throw new Error('no token received from server')
+  }
+  await AsyncStorage.setItem('token',token)
+
+    dispatch({ type: "LOGIN_SUCCESS", payload:res.data});
+  
+
+
+
+
+setPassword('')
 setUsername('')
 setLoginsuccess(true)
 setErrM('')
-if(res.status===200){
-  dispatch({type:"LOGIN_SUCCESS",payload:otherres})
+
  
  
-}
+
 
   }catch(error){
      setErrMessage(true)
-    console.log(error)
+     setErrM('Login Failed')
+    console.log('login error:', error)
+    dispatch({ type: "LOGIN_FAILURE", payload: error });
   }
 
   
@@ -69,7 +92,7 @@ if(res.status===200){
                 placeholder="password"
                 value={password}
                 onChangeText={setPassword}
-                multiline
+                
                 
          
          />
@@ -80,7 +103,7 @@ if(res.status===200){
             </TouchableOpacity>
             </View>
             <Text>{errM}</Text>
-            {errMessage &&<Text style={{color:'red'}}>try again</Text>}
+            
             
     </View>
     )

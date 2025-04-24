@@ -1,4 +1,4 @@
-import { useReducer, createContext, useEffect } from 'react';
+import { useReducer, createContext, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Initial state
@@ -15,7 +15,8 @@ export const AuthContext = createContext(INITIAL_STATE);
 const AuthReducer = (state, action) => {
     switch (action.type) {
         case "LOGIN_START":
-            return { user: null, loading: true, error: null };
+            AsyncStorage.removeItem('user'); // ✅ Clear saved user
+            return { user: null, loading: false, error: null };
         case "LOGIN_SUCCESS":
             return { user: action.payload, loading: false, error: null };
         case "LOGIN_FAILURE":
@@ -29,7 +30,7 @@ const AuthReducer = (state, action) => {
 
 export const AuthContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
-    let inactivityTimer;
+    const inactivityTimer =useRef(null)
 
     // Store user in AsyncStorage when state.user changes
     useEffect(() => {
@@ -65,10 +66,10 @@ export const AuthContextProvider = ({ children }) => {
 
     // Auto-logout after 5 minutes of inactivity
     const resetInactivityTimer = () => {
-        if (inactivityTimer) clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
+        if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
+        inactivityTimer.current = setTimeout(() => {
             dispatch({ type: "LOGOUT" });
-        }, 25 * 60 * 10000); // 5 minutes
+        }, 10 * 60 * 10000); // 10 minutes
     };
 
 
