@@ -41,7 +41,7 @@ app.use('/api/thread',threadrouter)
 
 
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect("mongodb+srv://Phillip:Phillip@cluster0.lhbenjf.mongodb.net/ELECTRODIARY?retryWrites=true&w=majority")
 .then(()=> {
     const PORT = process.env.PORT || 6000;
     app.listen(PORT, () => {
