@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native"
 import axios from "axios"
 import { useContext, useState } from "react"
-import { View,StyleSheet,TextInput,TouchableOpacity,Text } from "react-native"
+import { View,StyleSheet,TextInput,TouchableOpacity,Text, ActivityIndicator } from "react-native"
 import { AuthContext } from "../TheContext/AuthContext"
 import { BASE_URL } from "../constants"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -20,9 +20,10 @@ export const LoginScreen =() => {
     const [errMessage, setErrMessage] = useState(false)
     const[errM,setErrM] = useState('')
     const navigation = useNavigation()
+    const [loading,setLoading] =useState(false)
 
 const postLogin = async() => {
-
+setLoading(true)
   if(!username || !password){
     setErrM('complete both fields')
     return;
@@ -35,10 +36,7 @@ const postLogin = async() => {
     password,
   })
 
-  // const res = await axios.post('http://192.168.68.107:6000/api/auth/login',{
-  //   username,
-  //   password,
-  // })
+  
   console.log("Response from server:", res.data);
 
   const token = res.data?.token;
@@ -68,6 +66,8 @@ setErrM('')
      setErrM('Login Failed')
     console.log('login error:', error)
     dispatch({ type: "LOGIN_FAILURE", payload: error });
+  }finally{
+    setLoading(false)
   }
 
   
@@ -75,8 +75,19 @@ setErrM('')
 }
 
 
+const registerNavigate = () =>{
+  navigation.navigate('Register')
+}
+
+
     return(
     <View style={styles.container}>
+
+{loading ? (<ActivityIndicator size="large" color="#184b29"  />
+
+):(
+<View>
+  
             <TextInput
                 style={[styles.input]}
                 placeholder="username"
@@ -101,10 +112,12 @@ setErrM('')
           <TouchableOpacity  style={[styles.button,styles.saveButton]} onPress={postLogin}>
              <Text style={{color:'white'}} >Submit</Text>
             </TouchableOpacity>
+          
             </View>
+            <Text style={{textAlign:'center', fontSize:15}}>If you don't have an account, <Text onPress={registerNavigate} style={{color:'blue'}}>Register</Text></Text>
             <Text>{errM}</Text>
             
-            
+            </View>)}
     </View>
     )
 }

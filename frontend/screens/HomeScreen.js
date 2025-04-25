@@ -3,6 +3,9 @@ import { FlatList, TouchableOpacity, View,StyleSheet,Text, Modal } from 'react-n
 import { Theform } from './formscreen.js';
 import { UseContentContext } from '../hooks/contenthook.js';
 import { BASE_URL } from '../constants.js';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+
 
 
 
@@ -53,7 +56,7 @@ console.log(error)
       });
       
         return(
-
+         
         <TouchableOpacity style={styles.entryContainer} onPress={() => navigation.navigate('View', {id:item._id})}>
    
 
@@ -82,8 +85,14 @@ console.log(error)
     
 
     return (
+      <LinearGradient   
+      colors={['#1c1c1c', '#2a2a2a']}
+      style={{ flex: 1, padding: 16 }}
+      
+      
+      >
         <View style={styles.container}>
-          
+        <BlurView intensity={30} tint="dark" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
             <FlatList 
             
             data={contents}
@@ -116,7 +125,7 @@ console.log(error)
                 </View>
               </Modal>
         </View>
-        
+        </LinearGradient>
     )
 }
 
